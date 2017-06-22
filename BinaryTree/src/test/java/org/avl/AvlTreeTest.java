@@ -15,6 +15,14 @@ public class AvlTreeTest {
         avlTree.add(7);
         avlTree.add(0);
         avlTree.add(1);
-        System.out.println(avlTree);
+        preOrder(avlTree.getRoot());
+    }
+
+    static void preOrder(AvlTree.Node node) {
+        if (node != null) {
+            preOrder(node.lchild);
+            System.out.println(node.val);
+            preOrder(node.rchild);
+        }
     }
 }

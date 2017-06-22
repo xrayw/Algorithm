@@ -38,7 +38,7 @@ public class AvlTree {
                 if (val < node.lchild.val) {
                     node = rightRotate(node);       // ll, 右旋
                 }
-                else if (val > node.rchild.val) {
+                else if (val > node.lchild.val) {
                     node = leftRightRotate(node);       // lr
                 }
             }
@@ -126,6 +126,11 @@ public class AvlTree {
         return "AvlTree{root=" + (root == null ? "" : root) + '}';
     }
 
+    public Node getRoot() {
+        return root;
+    }
+
+
     static class Node {
         int val;
         int height;
@@ -140,7 +145,7 @@ public class AvlTree {
 
         @Override
         public String toString() {
-            return "Node{val=" + val + ", height=" + height + '}';
+            return "Node{val=" + val + '}';
         }
     }
 }
