@@ -9,6 +9,7 @@ public class AvlTree {
     private Node root;
 
     public boolean add(int n) {
+        this.root = add(this.root, n);
 
         return true;
     }
@@ -120,6 +121,10 @@ public class AvlTree {
         return node == null ? 0 : node.height;
     }
 
+    @Override
+    public String toString() {
+        return "AvlTree{root=" + (root == null ? "" : root) + '}';
+    }
 
     static class Node {
         int val;
@@ -131,6 +136,11 @@ public class AvlTree {
             this.val = n;
             this.lchild = lchild;
             this.rchild = rchild;
+        }
+
+        @Override
+        public String toString() {
+            return "Node{val=" + val + ", height=" + height + '}';
         }
     }
 }
