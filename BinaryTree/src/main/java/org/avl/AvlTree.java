@@ -92,6 +92,7 @@ public class AvlTree {
                 // 在高度较大的一侧选择节点替换要删除的节点, 这样删除节点后, avl树依然是平衡的
                 if (height(node.leftChild) > height(node.rightChild)) {
                     // 找出左子树的最大节点替换待删除节点
+                    Node maximum = maximum(node.leftChild);
 
                 }
                 else {
