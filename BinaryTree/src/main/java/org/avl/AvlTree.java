@@ -44,7 +44,8 @@ public class AvlTree {
             }
         }
         else {
-            throw new IllegalArgumentException("should not happen!");
+            // pass
+            return node;
         }
 
         node.height = max(height(node.leftChild), height(node.rightChild)) + 1;
@@ -184,9 +185,10 @@ public class AvlTree {
 
     /**
      * height of the {@code node}
+     * if node is null, return -1
      */
     private static int height(Node node) {
-        return node == null ? 0 : node.height;
+        return node == null ? -1 : node.height;
     }
 
     @Override
