@@ -20,9 +20,9 @@ public class AvlTreeTest {
 
     static void preOrder(AvlTree.Node node) {
         if (node != null) {
-            preOrder(node.lchild);
+            preOrder(node.leftChild);
             System.out.println(node.val);
-            preOrder(node.rchild);
+            preOrder(node.rightChild);
         }
     }
 }

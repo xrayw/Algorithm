@@ -14,31 +14,31 @@ public class AvlTree {
         return true;
     }
 
-    private Node add(Node node, int val) {
+    private static Node add(Node node, int val) {
         if (node == null) {
             node = new Node(val, null, null);         // 寻找要插入的位置
         }
         else if (val > node.val) {
-            node.rchild = add(node.rchild, val);
+            node.rightChild = add(node.rightChild, val);
 
             if (unbalance(node)) {
                 // 失去平衡, 通过旋转来重新平衡
-                if (val > node.rchild.val) {
+                if (val > node.rightChild.val) {
                     node = leftRotate(node);        // rr, 左旋
                 }
-                else if (val < node.rchild.val) {
+                else if (val < node.rightChild.val) {
                     node = rightLeftRotate(node);       // rl
                 }
             }
         }
         else if (val < node.val) {
-            node.lchild = add(node.lchild, val);
+            node.leftChild = add(node.leftChild, val);
 
             if (unbalance(node)) {
-                if (val < node.lchild.val) {
+                if (val < node.leftChild.val) {
                     node = rightRotate(node);       // ll, 右旋
                 }
-                else if (val > node.lchild.val) {
+                else if (val > node.leftChild.val) {
                     node = leftRightRotate(node);       // lr
                 }
             }
@@ -47,15 +47,28 @@ public class AvlTree {
             throw new IllegalArgumentException("should not happen!");
         }
 
-        node.height = max(height(node.lchild), height(node.rchild)) + 1;
+        node.height = max(height(node.leftChild), height(node.rightChild)) + 1;
         return node;
     }
 
     private static boolean unbalance(Node node) {
-        return Math.abs(height(node.rchild) - height(node.lchild)) >= 2;
+        return Math.abs(height(node.rightChild) - height(node.leftChild)) >= 2;
     }
 
     public boolean contains(int n) {
+        Node node = this.root;
+        while (node != null) {
+            int val = node.val;
+            if (n == val) {
+                return true;
+            }
+            else if (n > val) {
+                node = node.rightChild;
+            }
+            else {
+                node = node.leftChild;
+            }
+        }
         return false;
     }
 
@@ -63,6 +76,22 @@ public class AvlTree {
         return false;
     }
 
+    private static Node delete(Node node, int n) {
+        if (node == null) {
+            return null;
+        }
+
+        if (n == node.val) {
+
+        }
+        else if (n > node.val) {
+
+        }
+        else {
+
+        }
+        return node;
+    }
 
     /**
      * 向a的左子树的左子树插入节点, 右旋
@@ -73,12 +102,12 @@ public class AvlTree {
      *       /
      *     c
      */
-    private Node rightRotate(Node a) {
-        Node b = a.lchild;
-        a.lchild = b.rchild;
-        b.rchild = a;
-        a.height = max(height(a.lchild), height(a.rchild)) + 1;
-        b.height = max(height(b.rchild), height(b.rchild)) + 1;
+    private static Node rightRotate(Node a) {
+        Node b = a.leftChild;
+        a.leftChild = b.rightChild;
+        b.rightChild = a;
+        a.height = max(height(a.leftChild), height(a.rightChild)) + 1;
+        b.height = max(height(b.rightChild), height(b.rightChild)) + 1;
         return b;
     }
 
@@ -86,12 +115,12 @@ public class AvlTree {
     /**
      * 左旋
      */
-    private Node leftRotate(Node a) {
-        Node b = a.rchild;
-        a.rchild = b.lchild;
-        b.lchild = a;
-        a.height = max(height(a.lchild), height(a.rchild)) + 1;
-        b.height = max(height(b.rchild), height(b.rchild)) + 1;
+    private static Node leftRotate(Node a) {
+        Node b = a.rightChild;
+        a.rightChild = b.leftChild;
+        b.leftChild = a;
+        a.height = max(height(a.leftChild), height(a.rightChild)) + 1;
+        b.height = max(height(b.rightChild), height(b.rightChild)) + 1;
         return b;
     }
 
@@ -104,13 +133,13 @@ public class AvlTree {
      *          \
      *           c
      */
-    private Node leftRightRotate(Node a) {
-        a.lchild = leftRotate(a.lchild);
+    private static Node leftRightRotate(Node a) {
+        a.leftChild = leftRotate(a.leftChild);
         return rightRotate(a);
     }
 
-    private Node rightLeftRotate(Node a) {
-        a.rchild = rightRotate(a.rchild);
+    private static Node rightLeftRotate(Node a) {
+        a.rightChild = rightRotate(a.rightChild);
         return leftRotate(a);
     }
 
@@ -134,13 +163,13 @@ public class AvlTree {
     static class Node {
         int val;
         int height;
-        Node lchild;
-        Node rchild;
+        Node leftChild;
+        Node rightChild;
 
-        Node(int n, Node lchild, Node rchild) {
+        Node(int n, Node leftChild, Node rightChild) {
             this.val = n;
-            this.lchild = lchild;
-            this.rchild = rchild;
+            this.leftChild = leftChild;
+            this.rightChild = rightChild;
         }
 
         @Override
