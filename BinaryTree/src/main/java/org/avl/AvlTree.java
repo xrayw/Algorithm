@@ -52,7 +52,11 @@ public class AvlTree {
     }
 
     private static boolean unbalance(Node node) {
-        return Math.abs(height(node.rightChild) - height(node.leftChild)) >= 2;
+        int abs = Math.abs(height(node.rightChild) - height(node.leftChild));
+        if (abs > 2) {
+            throw new IllegalArgumentException("should not happen");
+        }
+        return abs == 2;
     }
 
     public boolean contains(int n) {
@@ -72,23 +76,58 @@ public class AvlTree {
         return false;
     }
 
-    public boolean delete(int n) {
-        return false;
+    public boolean remove(int n) {
+        this.root = remove(this.root, n);
+        return true;
     }
 
-    private static Node delete(Node node, int n) {
+    private static Node remove(Node node, int n) {
         if (node == null) {
             return null;
         }
 
         if (n == node.val) {
-
+            if (node.leftChild != null && node.rightChild != null) {
+                // 在高度较大的一侧选择节点替换要删除的节点
+                if (height(node.leftChild) > height(node.rightChild)) {
+                    // 找出左子树的最大节点替换待删除节点
+                }
+                else {
+                    // 找出右子树的最小节点替换待删除节点
+                }
+            }
+            else  {
+                if (node.leftChild == null) {
+                    node = node.rightChild;
+                }
+                else {
+                    node = node.leftChild;
+                }
+                return node;
+            }
         }
         else if (n > node.val) {
-
+            node.rightChild = remove(node.rightChild, n);
+            // 删除右子节点导致的不平衡,
+            if (unbalance(node)) {
+                if (height(node.leftChild.rightChild) > height(node.leftChild.leftChild)) {
+                    node = leftRightRotate(node);
+                }
+                else {
+                    node = leftRotate(node);
+                }
+            }
         }
         else {
-
+            node.leftChild = remove(node.leftChild, n);
+            if (unbalance(node)) {
+                if (height(node.rightChild.rightChild) > height(node.rightChild.leftChild)) {
+                    node = rightRotate(node);
+                }
+                else {
+                    node = rightLeftRotate(node);
+                }
+            }
         }
         return node;
     }
