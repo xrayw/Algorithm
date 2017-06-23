@@ -89,9 +89,10 @@ public class AvlTree {
 
         if (n == node.val) {
             if (node.leftChild != null && node.rightChild != null) {
-                // 在高度较大的一侧选择节点替换要删除的节点
+                // 在高度较大的一侧选择节点替换要删除的节点, 这样删除节点后, avl树依然是平衡的
                 if (height(node.leftChild) > height(node.rightChild)) {
                     // 找出左子树的最大节点替换待删除节点
+
                 }
                 else {
                     // 找出右子树的最小节点替换待删除节点
@@ -191,13 +192,31 @@ public class AvlTree {
         return node == null ? -1 : node.height;
     }
 
-    @Override
-    public String toString() {
-        return "AvlTree{root=" + (root == null ? "" : root) + '}';
+    private static Node maximum(Node node) {
+        if (node != null) {
+            while (node.rightChild != null) {
+                node = node.rightChild;
+            }
+        }
+        return node;
+    }
+
+    private static Node minimum(Node node) {
+        if (node != null) {
+            while (node.leftChild != null) {
+                node = node.leftChild;
+            }
+        }
+        return node;
     }
 
     public Node getRoot() {
         return root;
+    }
+
+    @Override
+    public String toString() {
+        return "AvlTree{root=" + (root == null ? "" : root) + '}';
     }
 
 
