@@ -194,7 +194,7 @@ public class AvlTree {
      * if node is null, return -1
      */
     private static int height(Node node) {
-        return node == null ? -1 : node.height;
+        return node == null ? 0 : node.height;
     }
 
     private static Node maximum(Node node) {
