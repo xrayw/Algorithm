@@ -235,7 +235,7 @@ public class AvlTree {
 
         @Override
         public String toString() {
-            return "Node{val=" + val + '}';
+            return "Node{val=" + val + ", height=" + height + '}';
         }
     }
 }
