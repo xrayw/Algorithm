@@ -64,14 +64,14 @@ public class AvlTree {
         Node node = this.root;
         while (node != null) {
             int val = node.val;
-            if (n == val) {
-                return true;
-            }
-            else if (n > val) {
+            if (n > val) {
                 node = node.rightChild;
             }
-            else {
+            else if (n < val) {
                 node = node.leftChild;
+            }
+            else {
+                return true;
             }
         }
         return false;
@@ -92,11 +92,15 @@ public class AvlTree {
                 // 在高度较大的一侧选择节点替换要删除的节点, 这样删除节点后, avl树依然是平衡的
                 if (height(node.leftChild) > height(node.rightChild)) {
                     // 找出左子树的最大节点替换待删除节点
-                    Node maximum = maximum(node.leftChild);
-
+                    Node max = maximum(node.leftChild);
+                    node.val = max.val;
+                    node.leftChild = remove(node.leftChild, max.val);
                 }
                 else {
                     // 找出右子树的最小节点替换待删除节点
+                    Node min = minimum(node.rightChild);
+                    node.val = min.val;
+                    node.rightChild = remove(node.rightChild, min.val);
                 }
             }
             else  {
@@ -117,18 +121,18 @@ public class AvlTree {
                     node = leftRightRotate(node);
                 }
                 else {
-                    node = leftRotate(node);
+                    node = rightRotate(node);
                 }
             }
         }
         else {
             node.leftChild = remove(node.leftChild, n);
             if (unbalance(node)) {
-                if (height(node.rightChild.rightChild) > height(node.rightChild.leftChild)) {
-                    node = rightRotate(node);
+                if (height(node.rightChild.leftChild) > height(node.rightChild.rightChild)) {
+                    node = rightLeftRotate(node);
                 }
                 else {
-                    node = rightLeftRotate(node);
+                    node = leftRotate(node);
                 }
             }
         }
@@ -149,7 +153,7 @@ public class AvlTree {
         a.leftChild = b.rightChild;
         b.rightChild = a;
         a.height = max(height(a.leftChild), height(a.rightChild)) + 1;
-        b.height = max(height(b.rightChild), height(b.rightChild)) + 1;
+        b.height = max(height(b.leftChild), height(b.rightChild)) + 1;
         return b;
     }
 
@@ -162,7 +166,7 @@ public class AvlTree {
         a.rightChild = b.leftChild;
         b.leftChild = a;
         a.height = max(height(a.leftChild), height(a.rightChild)) + 1;
-        b.height = max(height(b.rightChild), height(b.rightChild)) + 1;
+        b.height = max(height(b.leftChild), height(b.rightChild)) + 1;
         return b;
     }
 
@@ -209,10 +213,6 @@ public class AvlTree {
             }
         }
         return node;
-    }
-
-    public Node getRoot() {
-        return root;
     }
 
     @Override

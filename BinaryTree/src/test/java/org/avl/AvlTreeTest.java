@@ -15,7 +15,6 @@ public class AvlTreeTest {
         //avlTree.add(7);
         //avlTree.add(0);
         //avlTree.add(1);
-        //preOrder(avlTree.getRoot());
 
         AvlTree avl = new AvlTree();
         avl.add(8);
@@ -24,6 +23,12 @@ public class AvlTreeTest {
         avl.add(2);
         avl.add(6);
         avl.add(5);
+
+        avl.remove(8);
+        avl.remove(12);
+        avl.remove(4);
+        avl.remove(2);
+        avl.remove(4);
         System.out.println(avl);
     }
 
