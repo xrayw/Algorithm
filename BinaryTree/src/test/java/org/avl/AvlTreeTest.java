@@ -85,6 +85,21 @@ public class AvlTreeTest {
         System.out.println(tree.getRoot().getHeight());
     }
 
+    /**
+     * 测试分层遍历
+     */
+    @Test
+    public void levelTraverse() {
+        AvlTree avl = new AvlTree();
+        avl.add(8);
+        avl.add(12);
+        avl.add(4);
+        avl.add(2);
+        avl.add(6);
+        avl.add(5);
+        avl.levelTraverse(System.out::println);
+    }
+
     private static void preOrder(AvlTree.TreeNode node) {
         if (node != null) {
             preOrder(node.leftChild);

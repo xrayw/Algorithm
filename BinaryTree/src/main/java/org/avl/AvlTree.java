@@ -3,6 +3,11 @@ package org.avl;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.LinkedList;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.function.Consumer;
+
 import static java.lang.Math.max;
 
 /**
@@ -172,6 +177,33 @@ public class AvlTree {
         int leftDepth = getDepth(root.leftChild);
         int rightDepth = getDepth(root.rightChild);
         return max(leftDepth, rightDepth) + 1;
+    }
+
+    public void levelTraverse(Consumer<Integer> consumer) {
+        Objects.requireNonNull(consumer);
+        levelTraverse(root, consumer);
+    }
+
+    /**
+     * 分层遍历二叉树
+     */
+    private static void levelTraverse(TreeNode root, Consumer<Integer> consumer) {
+        if (root != null) {
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.offer(root);
+            while (!queue.isEmpty()) {
+                TreeNode node = queue.poll();
+
+                consumer.accept(node.getVal());        // accept node val
+
+                if (node.getLeftChild() != null) {
+                    queue.offer(node.getLeftChild());
+                }
+                if (node.getRightChild() != null) {
+                    queue.offer(node.getRightChild());
+                }
+            }
+        }
     }
 
     /**
