@@ -1,11 +1,15 @@
 package org.avl;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import static java.lang.Math.max;
 
 /**
  * AVL树
  */
 public class AvlTree {
+    @Getter
     private TreeNode root;
 
     public boolean add(int n) {
@@ -146,12 +150,28 @@ public class AvlTree {
     /**
      * 获取节点数
      */
-    private int getNodeNumber(TreeNode root) {
+    private static int getNodeNumber(TreeNode root) {
         if (root == null) {
             return 0;
         }
 
         return getNodeNumber(root.leftChild) + getNodeNumber(root.rightChild) + 1;
+    }
+
+    public int getDepth() {
+        return getDepth(root);
+    }
+
+    /**
+     * 获取以root为根节点的树的深度
+     */
+    private static int getDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int leftDepth = getDepth(root.leftChild);
+        int rightDepth = getDepth(root.rightChild);
+        return max(leftDepth, rightDepth) + 1;
     }
 
     /**
@@ -236,6 +256,8 @@ public class AvlTree {
     }
 
 
+    @Getter
+    @Setter
     static class TreeNode {
         int val;
         int height;

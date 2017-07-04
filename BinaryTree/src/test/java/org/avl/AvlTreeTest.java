@@ -76,8 +76,13 @@ public class AvlTreeTest {
     @Test
     public void getNodeNumber() {
         int nodeNumber = tree.getNodeNumber();
-        System.out.println(nodeNumber);
         assertThat(nodeNumber, is(nodesSet.size()));
+    }
+
+    @Test
+    public void getDepth() {
+        System.out.println(tree.getDepth());
+        System.out.println(tree.getRoot().getHeight());
     }
 
     private static void preOrder(AvlTree.TreeNode node) {
