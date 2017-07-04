@@ -6,7 +6,7 @@ import static java.lang.Math.max;
  * AVL树
  */
 public class AvlTree {
-    private Node root;
+    private TreeNode root;
 
     public boolean add(int n) {
         this.root = add(this.root, n);
@@ -14,9 +14,9 @@ public class AvlTree {
         return true;
     }
 
-    private static Node add(Node node, int val) {
+    private static TreeNode add(TreeNode node, int val) {
         if (node == null) {
-            node = new Node(val, null, null);         // 寻找要插入的位置
+            node = new TreeNode(val, null, null);         // 寻找要插入的位置
         }
         else if (val > node.val) {
             node.rightChild = add(node.rightChild, val);
@@ -52,7 +52,7 @@ public class AvlTree {
         return node;
     }
 
-    private static boolean unbalance(Node node) {
+    private static boolean unbalance(TreeNode node) {
         int abs = Math.abs(height(node.rightChild) - height(node.leftChild));
         if (abs > 2) {
             throw new IllegalArgumentException("should not happen");
@@ -61,7 +61,7 @@ public class AvlTree {
     }
 
     public boolean contains(int n) {
-        Node node = this.root;
+        TreeNode node = this.root;
         while (node != null) {
             int val = node.val;
             if (n > val) {
@@ -82,7 +82,7 @@ public class AvlTree {
         return true;
     }
 
-    private static Node remove(Node node, int n) {
+    private static TreeNode remove(TreeNode node, int n) {
         if (node == null) {
             return null;
         }
@@ -92,13 +92,13 @@ public class AvlTree {
                 // 在高度较大的一侧选择节点替换要删除的节点, 这样删除节点后, avl树依然是平衡的
                 if (height(node.leftChild) > height(node.rightChild)) {
                     // 找出左子树的最大节点替换待删除节点
-                    Node max = maximum(node.leftChild);
+                    TreeNode max = maximum(node.leftChild);
                     node.val = max.val;
                     node.leftChild = remove(node.leftChild, max.val);
                 }
                 else {
                     // 找出右子树的最小节点替换待删除节点
-                    Node min = minimum(node.rightChild);
+                    TreeNode min = minimum(node.rightChild);
                     node.val = min.val;
                     node.rightChild = remove(node.rightChild, min.val);
                 }
@@ -139,6 +139,21 @@ public class AvlTree {
         return node;
     }
 
+    public int getNodeNumber() {
+        return this.getNodeNumber(root);
+    }
+
+    /**
+     * 获取节点数
+     */
+    private int getNodeNumber(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        return getNodeNumber(root.leftChild) + getNodeNumber(root.rightChild) + 1;
+    }
+
     /**
      * 向a的左子树的左子树插入节点, 右旋
      * <p>
@@ -148,8 +163,8 @@ public class AvlTree {
      *       /
      *     c
      */
-    private static Node rightRotate(Node a) {
-        Node b = a.leftChild;
+    private static TreeNode rightRotate(TreeNode a) {
+        TreeNode b = a.leftChild;
         a.leftChild = b.rightChild;
         b.rightChild = a;
         a.height = max(height(a.leftChild), height(a.rightChild)) + 1;
@@ -161,8 +176,8 @@ public class AvlTree {
     /**
      * 左旋
      */
-    private static Node leftRotate(Node a) {
-        Node b = a.rightChild;
+    private static TreeNode leftRotate(TreeNode a) {
+        TreeNode b = a.rightChild;
         a.rightChild = b.leftChild;
         b.leftChild = a;
         a.height = max(height(a.leftChild), height(a.rightChild)) + 1;
@@ -179,12 +194,12 @@ public class AvlTree {
      *          \
      *           c
      */
-    private static Node leftRightRotate(Node a) {
+    private static TreeNode leftRightRotate(TreeNode a) {
         a.leftChild = leftRotate(a.leftChild);
         return rightRotate(a);
     }
 
-    private static Node rightLeftRotate(Node a) {
+    private static TreeNode rightLeftRotate(TreeNode a) {
         a.rightChild = rightRotate(a.rightChild);
         return leftRotate(a);
     }
@@ -193,11 +208,11 @@ public class AvlTree {
      * height of the {@code node}
      * if node is null, return -1
      */
-    private static int height(Node node) {
+    private static int height(TreeNode node) {
         return node == null ? 0 : node.height;
     }
 
-    private static Node maximum(Node node) {
+    private static TreeNode maximum(TreeNode node) {
         if (node != null) {
             while (node.rightChild != null) {
                 node = node.rightChild;
@@ -206,7 +221,7 @@ public class AvlTree {
         return node;
     }
 
-    private static Node minimum(Node node) {
+    private static TreeNode minimum(TreeNode node) {
         if (node != null) {
             while (node.leftChild != null) {
                 node = node.leftChild;
@@ -221,13 +236,13 @@ public class AvlTree {
     }
 
 
-    static class Node {
+    static class TreeNode {
         int val;
         int height;
-        Node leftChild;
-        Node rightChild;
+        TreeNode leftChild;
+        TreeNode rightChild;
 
-        Node(int n, Node leftChild, Node rightChild) {
+        TreeNode(int n, TreeNode leftChild, TreeNode rightChild) {
             this.val = n;
             this.leftChild = leftChild;
             this.rightChild = rightChild;
@@ -235,7 +250,7 @@ public class AvlTree {
 
         @Override
         public String toString() {
-            return "Node{val=" + val + ", height=" + height + '}';
+            return "TreeNode{val=" + val + ", height=" + height + '}';
         }
     }
 }

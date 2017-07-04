@@ -1,13 +1,36 @@
 package org.avl;
 
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 public class AvlTreeTest {
+    private AvlTree tree;
+
+    private Set<Integer> nodesSet;
+
+    @Before
+    public void before() {
+        int number = 100000;
+
+        tree = new AvlTree();
+        nodesSet = new HashSet<>(number);
+        Random random = new Random();
+        for (int i = 0; i < number; i++) {
+            int val = random.nextInt(Integer.MAX_VALUE);
+            tree.add(val);
+
+            nodesSet.add(val);
+        }
+    }
+
     @Test
+    @Ignore
     public void add() {
         //AvlTree avlTree = new AvlTree();
         //avlTree.add(4);
@@ -35,19 +58,29 @@ public class AvlTreeTest {
         //avl.remove(5);
 
 
+        int number = 100000;
+
         AvlTree tree = new AvlTree();
-        List<Integer> list = new ArrayList<>(100000);
+        Set<Integer> nodesSet = new HashSet<>(number);
         Random random = new Random();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < number; i++) {
             int val = random.nextInt(Integer.MAX_VALUE);
-            list.add(val);
             tree.add(val);
+
+            nodesSet.add(val);
         }
 
-        list.forEach(tree::remove);
+        nodesSet.forEach(tree::remove);
     }
 
-    static void preOrder(AvlTree.Node node) {
+    @Test
+    public void getNodeNumber() {
+        int nodeNumber = tree.getNodeNumber();
+        System.out.println(nodeNumber);
+        assertThat(nodeNumber, is(nodesSet.size()));
+    }
+
+    private static void preOrder(AvlTree.TreeNode node) {
         if (node != null) {
             preOrder(node.leftChild);
             System.out.println(node.val);
