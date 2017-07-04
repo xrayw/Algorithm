@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.function.Consumer;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.max;
 
 /**
@@ -222,6 +223,28 @@ public class AvlTree {
         return getLeafNodeNumber(root.getLeftChild()) + getLeafNodeNumber(root.getRightChild());
     }
 
+    public boolean isAvl() {
+        return isBalanced(root) >= 0;
+    }
+
+    /**
+     * 判断二叉树是不是avl树
+     * @return -1 if is not balance
+     */
+    public static int isBalanced(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        int leftHeight = isBalanced(root.leftChild);
+        int rightHeight = isBalanced(root.rightChild);
+        if (leftHeight != -1 && rightHeight != -1) {
+            if (abs(leftHeight - rightHeight) <= 1) {
+                return max(leftHeight, rightHeight) + 1;
+            }
+        }
+        return -1;
+    }
 
 
     /**

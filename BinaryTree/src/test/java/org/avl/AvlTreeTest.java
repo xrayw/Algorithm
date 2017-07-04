@@ -4,9 +4,11 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class AvlTreeTest {
@@ -74,27 +76,49 @@ public class AvlTreeTest {
     }
 
     @Test
+    @Ignore
     public void getNodeNumber() {
         int nodeNumber = tree.getNodeNumber();
         assertThat(nodeNumber, is(nodesSet.size()));
     }
 
     @Test
+    @Ignore
     public void getDepth() {
         System.out.println(tree.getDepth());
         System.out.println(tree.getRoot().getHeight());
     }
 
     @Test
+    @Ignore
     public void getLeafNumber() {
         int leafNodeNumber = tree.getLeafNodeNumber(tree.getRoot());
         System.out.println(leafNodeNumber);
+    }
+
+    @Test
+    public void balance() {
+        AvlTree tree = new AvlTree();
+        tree.add(1);
+        tree.add(2);
+        tree.add(3);
+
+        System.out.println(tree.isAvl());
+
+        AvlTree.TreeNode node = new AvlTree.TreeNode(1, null, null);
+        AvlTree.TreeNode two = new AvlTree.TreeNode(2, null, null);
+        node.setRightChild(two);
+        AvlTree.TreeNode three = new AvlTree.TreeNode(3, null, null);
+        two.setRightChild(three);
+
+        System.out.println(AvlTree.isBalanced(node));
     }
 
     /**
      * 测试分层遍历
      */
     @Test
+    @Ignore
     public void levelTraverse() {
         AvlTree avl = new AvlTree();
         avl.add(8);
