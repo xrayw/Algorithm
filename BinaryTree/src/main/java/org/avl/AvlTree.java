@@ -206,6 +206,24 @@ public class AvlTree {
         }
     }
 
+
+    /**
+     * 获取二叉树中叶子节点个数
+     */
+    public static int getLeafNodeNumber(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        if (root.getLeftChild() == null && root.getRightChild() == null) {
+            return 1;
+        }
+
+        return getLeafNodeNumber(root.getLeftChild()) + getLeafNodeNumber(root.getRightChild());
+    }
+
+
+
     /**
      * 向a的左子树的左子树插入节点, 右旋
      * <p>

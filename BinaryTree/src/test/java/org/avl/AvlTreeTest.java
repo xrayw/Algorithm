@@ -85,6 +85,12 @@ public class AvlTreeTest {
         System.out.println(tree.getRoot().getHeight());
     }
 
+    @Test
+    public void getLeafNumber() {
+        int leafNodeNumber = tree.getLeafNodeNumber(tree.getRoot());
+        System.out.println(leafNodeNumber);
+    }
+
     /**
      * 测试分层遍历
      */
