@@ -13,6 +13,7 @@ import static java.lang.Math.max;
 
 /**
  * AVL树
+ *     Reference: http://blog.csdn.net/luckyxiaoqiang/article/details/7518888/
  */
 public class AvlTree {
     @Getter
@@ -244,6 +245,20 @@ public class AvlTree {
             }
         }
         return -1;
+    }
+
+    /**
+     * 求二叉树的镜像
+     */
+    public static TreeNode mirror(TreeNode parent) {
+        if (parent == null) {
+            return null;
+        }
+        TreeNode left = mirror(parent.leftChild);
+        TreeNode right = mirror(parent.rightChild);
+        parent.leftChild = right;
+        parent.rightChild = left;
+        return parent;
     }
 
 

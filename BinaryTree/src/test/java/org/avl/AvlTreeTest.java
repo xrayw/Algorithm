@@ -97,6 +97,7 @@ public class AvlTreeTest {
     }
 
     @Test
+    @Ignore
     public void balance() {
         AvlTree tree = new AvlTree();
         tree.add(1);
@@ -118,7 +119,7 @@ public class AvlTreeTest {
      * 测试分层遍历
      */
     @Test
-    @Ignore
+    //@Ignore
     public void levelTraverse() {
         AvlTree avl = new AvlTree();
         avl.add(8);
@@ -127,7 +128,19 @@ public class AvlTreeTest {
         avl.add(2);
         avl.add(6);
         avl.add(5);
-        avl.levelTraverse(System.out::println);
+        avl.levelTraverse(x -> {
+            System.out.print(x);
+            System.out.print(" ");
+        });
+
+        System.out.println();
+
+        // 测试镜像
+        AvlTree.mirror(avl.getRoot());
+        avl.levelTraverse(x -> {
+            System.out.print(x);
+            System.out.print(" ");
+        });
     }
 
     private static void preOrder(AvlTree.TreeNode node) {
