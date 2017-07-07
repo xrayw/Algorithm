@@ -193,9 +193,8 @@ public class AvlTree {
         if (root != null) {
             Queue<TreeNode> queue = new LinkedList<>();
             queue.offer(root);
-            while (!queue.isEmpty()) {
-                TreeNode node = queue.poll();
-
+            TreeNode node;
+            while ((node = queue.poll()) != null) {
                 consumer.accept(node.getVal());        // accept node val
 
                 if (node.getLeftChild() != null) {
