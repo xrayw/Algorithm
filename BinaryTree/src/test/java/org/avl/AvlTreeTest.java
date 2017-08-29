@@ -32,7 +32,7 @@ public class AvlTreeTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void add() {
         //AvlTree avlTree = new AvlTree();
         //avlTree.add(4);
@@ -60,7 +60,7 @@ public class AvlTreeTest {
         //avl.remove(5);
 
 
-        int number = 100000;
+        int number = 10000000;
 
         AvlTree tree = new AvlTree();
         Set<Integer> nodesSet = new HashSet<>(number);
@@ -119,7 +119,7 @@ public class AvlTreeTest {
      * 测试分层遍历
      */
     @Test
-    //@Ignore
+    @Ignore
     public void levelTraverse() {
         AvlTree avl = new AvlTree();
         avl.add(8);

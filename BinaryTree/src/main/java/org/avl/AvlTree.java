@@ -65,10 +65,10 @@ public class AvlTree {
 
     private static boolean unbalance(TreeNode node) {
         int abs = Math.abs(height(node.rightChild) - height(node.leftChild));
-        if (abs > 2) {
-            throw new IllegalArgumentException("should not happen");
-        }
-        return abs == 2;
+        //if (abs > 2) {
+        //    throw new IllegalArgumentException("should not happen");
+        //}
+        return abs >= 2;
     }
 
     public boolean contains(int n) {
@@ -147,6 +147,8 @@ public class AvlTree {
                 }
             }
         }
+
+        node.height = max(height(node.leftChild), height(node.rightChild)) + 1;
         return node;
     }
 
@@ -316,7 +318,7 @@ public class AvlTree {
      * if node is null, return -1
      */
     private static int height(TreeNode node) {
-        return node == null ? 0 : node.height;
+        return node == null ? -1 : node.height;
     }
 
     private static TreeNode maximum(TreeNode node) {
