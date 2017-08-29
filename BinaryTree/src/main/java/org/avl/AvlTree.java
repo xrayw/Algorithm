@@ -21,7 +21,6 @@ public class AvlTree {
 
     public boolean add(int n) {
         this.root = add(this.root, n);
-
         return true;
     }
 
