@@ -65,7 +65,7 @@ public class AvlTree {
     private static boolean unbalance(TreeNode node) {
         int abs = Math.abs(height(node.rightChild) - height(node.leftChild));
         if (abs > 2) {
-            throw new IllegalArgumentException("should not happen");
+            throw new IllegalStateException("should not happen");
         }
         return abs >= 2;
     }
