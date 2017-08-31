@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -64,7 +65,8 @@ public class AvlTreeTest {
 
         AvlTree tree = new AvlTree();
         Set<Integer> nodesSet = new HashSet<>(number);
-        Random random = new Random();
+        //Random random = new Random();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int i = 0; i < number; i++) {
             int val = random.nextInt(Integer.MAX_VALUE);
             tree.add(val);
@@ -72,6 +74,9 @@ public class AvlTreeTest {
             nodesSet.add(val);
         }
 
+        System.out.println("============================================================================= ~~~");
+        System.out.println("starting remove ~~~");
+        System.out.println("============================================================================= ~~~");
         nodesSet.forEach(tree::remove);
     }
 

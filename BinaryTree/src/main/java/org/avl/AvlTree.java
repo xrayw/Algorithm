@@ -58,15 +58,15 @@ public class AvlTree {
             return node;
         }
 
-        node.height = max(height(node.leftChild), height(node.rightChild)) + 1;
+        updateHeight(node);
         return node;
     }
 
     private static boolean unbalance(TreeNode node) {
         int abs = Math.abs(height(node.rightChild) - height(node.leftChild));
-        //if (abs > 2) {
-        //    throw new IllegalArgumentException("should not happen");
-        //}
+        if (abs > 2) {
+            throw new IllegalArgumentException("should not happen");
+        }
         return abs >= 2;
     }
 
@@ -99,8 +99,10 @@ public class AvlTree {
 
         if (n == node.val) {
             if (node.leftChild != null && node.rightChild != null) {
-                // 在高度较大的一侧选择节点替换要删除的节点, 这样删除节点后, avl树依然是平衡的
+
                 if (height(node.leftChild) > height(node.rightChild)) {
+
+                    // 在高度较大的一侧选择节点替换要删除的节点, 这样删除节点后, avl树依然是平衡的
                     // 找出左子树的最大节点替换待删除节点
                     TreeNode max = maximum(node.leftChild);
                     node.val = max.val;
@@ -147,8 +149,14 @@ public class AvlTree {
             }
         }
 
-        node.height = max(height(node.leftChild), height(node.rightChild)) + 1;
+        updateHeight(node);
         return node;
+    }
+
+    private static void updateHeight(TreeNode node) {
+        if (node != null) {
+            node.height = max(height(node.leftChild), height(node.rightChild)) + 1;
+        }
     }
 
     public int getNodeNumber() {
@@ -296,6 +304,7 @@ public class AvlTree {
 
     /**
      * LR型
+     * <p>
      *           a
      *          /
      *         b
