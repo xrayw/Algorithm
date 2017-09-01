@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Node{
-    int val;
-    Node next;
+public class Node {
+  int val;
+  Node next;
 }

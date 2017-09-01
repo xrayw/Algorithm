@@ -5,15 +5,15 @@ package org.linkedlist;
  */
 public class ReverseList {
 
-    public static Node reverse(Node head) {
-        Node current = head;
-        Node newHead = null;
-        while (current != null) {
-            head = current.next;
-            current.next = newHead;
-            newHead = current;
-            current = head;
-        }
-        return newHead;
+  public static Node reverse(Node head) {
+    Node current = head;
+    Node newHead = null;
+    while (current != null) {
+      head = current.next;
+      current.next = newHead;
+      newHead = current;
+      current = head;
     }
+    return newHead;
+  }
 }
