@@ -5,7 +5,7 @@
     <groupId>org</groupId>
     <artifactId>Algorithm</artifactId>
     <version>0.1</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>Algorithm</name>
     <url>http://maven.apache.org</url>
