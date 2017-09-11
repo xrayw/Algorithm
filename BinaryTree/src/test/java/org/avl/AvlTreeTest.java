@@ -35,6 +35,7 @@ public class AvlTreeTest {
   @Test
   //@Ignore
   public void add() {
+    //<editor-fold desc="commented">
     //AvlTree avlTree = new AvlTree();
     //avlTree.add(4);
     //avlTree.add(5);
@@ -59,6 +60,7 @@ public class AvlTreeTest {
     //avl.remove(4);
     //avl.remove(2);
     //avl.remove(5);
+    //</editor-fold>
 
 
     int number = 10000000;
