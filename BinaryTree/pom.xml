@@ -34,4 +34,36 @@
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!--<testFailureIgnore>true</testFailureIgnore>-->
+                    <skip>true</skip>       <!--跳过单元测试-->
+                </configuration>
+            </plugin>
+
+            <!-- reference: http://www.cnblogs.com/f-zhao/p/6929814.html  http://maven.apache.org/shared/maven-archiver/index.html -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <attach>false</attach>
+
+                    <archive>
+                        <manifest>
+                            <mainClass>org.avl.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
