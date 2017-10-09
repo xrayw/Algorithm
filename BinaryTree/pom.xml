@@ -47,15 +47,21 @@
             </plugin>
 
             <!-- reference: http://www.cnblogs.com/f-zhao/p/6929814.html  http://maven.apache.org/shared/maven-archiver/index.html -->
+
+            <!--必须要绑定到一个命令的生命周期上才能生效-->
+            <!--formats要起作用的话必须添加descriptorRefs-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <attach>false</attach>
+
+                    <formats>
+                        <format>jar</format>
+                        <format>zip</format>
+                        <format>tar.gz</format>
+                    </formats>
 
                     <archive>
                         <manifest>
@@ -63,6 +69,15 @@
                         </manifest>
                     </archive>
                 </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
