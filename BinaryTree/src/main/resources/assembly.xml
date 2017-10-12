@@ -22,10 +22,19 @@
         </fileSet>
     </fileSets>
 
-    <!--<files>-->
-        <!--<file>-->
-            <!--<source>resources/assembly.xml</source>-->
-            <!--<outputDirectory>/</outputDirectory>-->
-        <!--</file>-->
-    <!--</files>-->
+    <!--<files>
+        <file>
+            <source>src/main/resources/assembly.xml</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+    </files>-->
+
+    <!--打包依赖-->
+    <dependencySets>
+        <dependencySet>
+            <unpack>true</unpack>
+            <outputDirectory>/</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+
 </assembly>
