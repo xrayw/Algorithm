@@ -54,7 +54,7 @@ public class RBTree<K extends Comparable<K>, V> {
    */
   private void fixInsert(Node<K, V> node) {
     Node<K, V> parent = node.getParent();
-    if (parent != null && parent.isRed()) {
+    while (parent != null && parent.isRed()) {
 
       Node<K, V> uncle = getUncle(node);
       if (uncle != null) {
