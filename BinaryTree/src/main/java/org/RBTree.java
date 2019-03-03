@@ -4,11 +4,14 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nullable;
+
 /**
  * 参考美团技术团队关于红黑树的描述和实现
  */
 public class RBTree<K extends Comparable<K>, V> {
 
+  @Getter
   private Node<K, V> root;
 
   public boolean add(K key, V value) {
@@ -39,7 +42,7 @@ public class RBTree<K extends Comparable<K>, V> {
     }
 
     // 修复由于插入导致的不平衡
-    this.fixInsert(node);
+    this.fixAfterInsert(node);
     return true;
   }
 
@@ -52,26 +55,25 @@ public class RBTree<K extends Comparable<K>, V> {
    *    <li>3.叔叔节点为空，且祖父节点、父节点和新节点不处于一条斜线上。</li>
    * </ul>
    */
-  private void fixInsert(Node<K, V> node) {
+  private void fixAfterInsert(Node<K, V> node) {
     Node<K, V> parent = node.getParent();
     while (parent != null && parent.isRed()) {
-
       Node<K, V> uncle = getUncle(node);
-      if (uncle != null) {
-        // case 1: uncle is red
+
+      // uncle节点存在且和parent节点都是红色的情况下只需要变色，不需要旋转
+      // uncle节点不存在或者是黑色（parent节点是红色）， 需要旋转操作
+      if (uncle != null && uncle.isRed()) {
+        // uncle is red
         parent.setRed(false);
         uncle.setRed(false);
         parent.parent.setRed(true);
 
-        // 当前节点node = parent.parent
-        // parent = node.parent
         node = parent.parent;
         parent = node.parent;
       }
       else {
-        // uncle is null
         Node<K, V> ancestor = parent.getParent();
-        boolean isRight = node == parent.left;
+        boolean isRight = (node == parent.right);
         if (parent == ancestor.left) {
           if (isRight) {
             //       a
@@ -83,9 +85,6 @@ public class RBTree<K extends Comparable<K>, V> {
             rightRotate(ancestor);
 
             node.setRed(false);
-
-            // 已经平衡, 停止修复
-            // parent = null;
           }
           else {
             //       a
@@ -110,7 +109,6 @@ public class RBTree<K extends Comparable<K>, V> {
             //      node
             leftRotate(ancestor);
 
-            ancestor.setRed(true);
             parent.setRed(false);
           }
           else {
@@ -122,12 +120,11 @@ public class RBTree<K extends Comparable<K>, V> {
             rightRotate(parent);
             leftRotate(ancestor);
 
-            ancestor.setRed(true);
             node.setRed(false);
           }
+          ancestor.setRed(true);
         }
-
-        return;
+        break;
       }
     }
 
@@ -138,14 +135,70 @@ public class RBTree<K extends Comparable<K>, V> {
   /**
    * 旋转后还得更新对应的parent
    */
-  private static void leftRotate(Node node) {
+  private void leftRotate(Node<K, V> p) {
+    //   p
+    //    \
+    //     r
+    //      \
+    //      node
+    Node<K, V> parent = p.parent;
 
+    Node<K, V> r = p.right;
+
+    p.right = r.left;
+    if (r.left != null) {
+      p.right.parent = p;
+    }
+
+    r.left = p;
+    p.parent = r;
+
+    if (parent == null) {
+      this.root = r;
+      r.parent = null;
+    } else {
+      if (parent.left == p) {
+        parent.left = r;
+      } else {
+        parent.right = r;
+      }
+      r.parent = parent;
+    }
   }
 
-  private static void rightRotate(Node node) {
+  private void rightRotate(Node<K, V> p) {
+    //         p
+    //       /
+    //      l
+    //    /
+    // node
+    Node<K, V> parent = p.parent;
 
+    Node<K, V> l = p.left;
+
+    p.left = l.right;
+    if (l.right != null) {
+      p.left.parent = p;
+    }
+
+    l.right = p;
+    p.parent = l;
+
+    if (parent == null) {
+      this.root = l;
+      l.parent = null;
+    } else {
+      if (parent.left == p) {
+        parent.left = l;
+      } else {
+        parent.right = l;
+      }
+      l.parent = parent;
+    }
   }
 
+
+  @Nullable
   private Node<K, V> getUncle(Node<K, V> node) {
     Node<K, V> parent = node.getParent();
     Node<K, V> ancestor = parent.getParent();
@@ -153,10 +206,7 @@ public class RBTree<K extends Comparable<K>, V> {
       return null;
     }
 
-    if (ancestor.left == parent) {
-      return ancestor.right;
-    }
-    return ancestor.left;
+    return ancestor.left == parent ? ancestor.right : ancestor.left;
   }
 
   private Node<K, V> findInsertParentNode(K key) {
@@ -179,7 +229,7 @@ public class RBTree<K extends Comparable<K>, V> {
 
   @Getter
   @Setter
-  private static class Node<K extends Comparable<K>, V> {
+  static class Node<K extends Comparable<K>, V> {
     K key;
     V value;
     Node<K, V> left;
@@ -197,6 +247,15 @@ public class RBTree<K extends Comparable<K>, V> {
       this.key = key;
       this.value = value;
       this.red = red;
+    }
+
+    @Override
+    public String toString() {
+      return "Node{" +
+        "key=" + key +
+        ", value=" + value +
+        ", red=" + red +
+        '}';
     }
   }
 }
