@@ -46,6 +46,68 @@ public class RBTree<K extends Comparable<K>, V> {
     return true;
   }
 
+  public V remove(K key) {
+    Objects.requireNonNull(key);
+
+    Node<K, V> cur = getRoot();
+    while (cur != null) {
+      int cmp = key.compareTo(cur.key);
+      if (cmp < 0) {
+        cur = cur.left;
+      }
+      else if (cmp > 0) {
+        cur = cur.right;
+      }
+      else {
+        if (cur.right == null) {
+          Node<K, V> parent = cur.parent;
+
+          if (cur.left != null) {
+            cur.left.parent = parent;
+          }
+
+          if (parent.left == cur) {
+            parent.left = cur.left;
+          }
+          else {
+            parent.right = cur.left;
+          }
+
+          if (!cur.isRed()) {
+
+          }
+
+        }
+        else {
+          // 找到右子树最小的数替换当前节点
+          Node<K, V> min = removeMin(cur.right);
+
+        }
+      }
+    }
+  }
+
+  /**
+   * 移除node子树的最小节点
+   * @param node
+   * @return
+   */
+  private Node<K, V> removeMin(Node<K, V> node) {
+    if (node.left == null) {
+      return node;
+    }
+
+    while (node.left != null) {
+      node = node.left;
+    }
+
+    Node<K, V> parent = node.parent;
+    parent.left = node.right;
+    node.right.parent = parent;
+
+    return node;
+  }
+
   /**
    * 当父节点是黑色的时候不用处理
    *
