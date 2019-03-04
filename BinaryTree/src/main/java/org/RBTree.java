@@ -4,6 +4,7 @@ import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -59,7 +60,16 @@ public class RBTree<K extends Comparable<K>, V> {
         cur = cur.right;
       }
       else {
-        if (cur.right == null) {
+        if (cur.right != null) {
+          // 找到右子树最小的数替换当前节点
+          Node<K, V> min = removeMin(cur.right);
+          cur.value = min.value;
+
+          if (!min.isRed()) {
+
+          }
+
+        } else {
           Node<K, V> parent = cur.parent;
 
           if (cur.left != null) {
@@ -78,19 +88,75 @@ public class RBTree<K extends Comparable<K>, V> {
           }
 
         }
-        else {
-          // 找到右子树最小的数替换当前节点
-          Node<K, V> min = removeMin(cur.right);
-
-        }
       }
     }
   }
 
+  private void fixAfterRemove(Node<K, V> node, boolean isParnet) {
+    Node cur = isParnet ? null : node;
+    boolean isRed = isParnet ? false : node.isRed();
+    Node<K,V> parent = isParnet ? node : node.parent;
+
+    while (cur != root && !isRed) {
+      // 由于node是黑色节点， 所以sibling一定不为null
+      Node<K,V> sibling = getSibling(node, parent);
+      boolean curIsLeft = parent.getRight() == sibling;
+
+      // sibling是红色节点
+      if (!curIsLeft && sibling.isRed()) {
+        parent.setRed(true);
+        sibling.setRed(false);
+        rightRotate(parent);
+      }
+      else if (curIsLeft && sibling.isRed()) {
+        parent.setRed(true);
+        sibling.setRed(false);
+        leftRotate(parent);
+      }
+
+      // sibling是黑色节点
+      else if (isBlack(sibling.left) && isBlack(sibling.right)) {
+        sibling.setRed(true);
+        cur = parent;
+        isRed = cur.isRed();
+
+        parent = parent.parent;
+      }
+
+      // sibling节点左子节点靠近删除节点一侧是红，另一侧是黑
+      else if (curIsLeft && !isBlack(sibling.left) && isBlack(sibling.right)) {
+        sibling.setRed(true);
+        sibling.left.setRed(false);
+
+        rightRotate(sibling);
+      } else if (!curIsLeft && !isBlack(sibling.right) && isBlack(sibling.left)) {
+        sibling.setRed(true);
+        sibling.right.setRed(false);
+        leftRotate(sibling);
+      }
+
+      // sibling节点远离删除节点的一侧是红
+      else if (curIsLeft && !isBlack(sibling.right)) {
+
+        leftRotate(parent);
+      } else if (!curIsLeft && !isBlack(sibling.left)) {
+
+      }
+    }
+  }
+
+  @Nonnull
+  private Node<K,V> getSibling(Node<K, V> node, Node<K,V> parent) {
+
+    return null;
+  }
+
+  private static boolean isBlack(Node node) {
+    return node == null || !node.isRed();
+  }
+
   /**
    * 移除node子树的最小节点
-   * @param node
-   * @return
    */
   private Node<K, V> removeMin(Node<K, V> node) {
     if (node.left == null) {
