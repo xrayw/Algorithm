@@ -137,11 +137,29 @@ public class RBTree<K extends Comparable<K>, V> {
 
       // sibling节点远离删除节点的一侧是红
       else if (curIsLeft && !isBlack(sibling.right)) {
+        sibling.setRed(parent.isRed());
+        parent.setRed(false);
+        sibling.right.setRed(false);
 
         leftRotate(parent);
-      } else if (!curIsLeft && !isBlack(sibling.left)) {
+        break;
 
+      } else if (!curIsLeft && !isBlack(sibling.left)) {
+        sibling.setRed(parent.isRed());
+        parent.setRed(false);
+        sibling.left.setRed(false);
+
+        rightRotate(parent);
+        break;
       }
+    }
+
+    if (isRed) {
+      cur.setRed(false);
+    }
+    if (root != null) {
+      root.setRed(false);
+      root.setParent(null);
     }
   }
 
