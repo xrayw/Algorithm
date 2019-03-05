@@ -51,6 +51,7 @@ public class RBTree<K extends Comparable<K>, V> {
     Objects.requireNonNull(key);
 
     Node<K, V> cur = getRoot();
+    V res;
     while (cur != null) {
       int cmp = key.compareTo(cur.key);
       if (cmp < 0) {
@@ -60,16 +61,27 @@ public class RBTree<K extends Comparable<K>, V> {
         cur = cur.right;
       }
       else {
+        res = cur.value;
         if (cur.right != null) {
           // 找到右子树最小的数替换当前节点
           Node<K, V> min = removeMin(cur.right);
+
+          boolean isParent = min.right == null;   // 是min的父节点还是右子节点
+          Node<K, V> x = isParent ? min.parent : min.right;   // x是需要开始调整平衡的节点
+
           cur.value = min.value;
 
           if (!min.isRed()) {
-
+            if (min != cur.right) {
+              fixAfterRemove(x, isParent);
+            } else if (min.right != null) {
+              fixAfterRemove(min.getRight(), false);
+            } else {
+              fixAfterRemove(min, true);
+            }
           }
-
-        } else {
+        }
+        else {
           Node<K, V> parent = cur.parent;
 
           if (cur.left != null) {
@@ -83,18 +95,27 @@ public class RBTree<K extends Comparable<K>, V> {
             parent.right = cur.left;
           }
 
-          if (!cur.isRed()) {
-
+          // current node is black and tree is not empty
+          if (!cur.isRed() && root.left != null) {
+            boolean isParent = cur.left == null;
+            Node<K, V> x = isParent ? parent : cur.left;
+            fixAfterRemove(x, isParent);
           }
-
         }
+
+        if (root != null) {
+          root.setRed(false);
+          root.parent = null;
+        }
+        return res;
       }
     }
+    return null;
   }
 
   private void fixAfterRemove(Node<K, V> node, boolean isParnet) {
     Node cur = isParnet ? null : node;
-    boolean isRed = isParnet ? false : node.isRed();
+    boolean isRed = isParnet ? false : node.isRed();    // 删除的节点的位置现在是什么颜色, 不存在就是黑色, 存在就是现任节点的颜色
     Node<K,V> parent = isParnet ? node : node.parent;
 
     while (cur != root && !isRed) {
@@ -165,8 +186,11 @@ public class RBTree<K extends Comparable<K>, V> {
 
   @Nonnull
   private Node<K,V> getSibling(Node<K, V> node, Node<K,V> parent) {
-
-    return null;
+    parent = (node == null ? parent : node.parent);
+    if (parent.left == node) {
+      return parent.right;
+    }
+    return parent.left;
   }
 
   private static boolean isBlack(Node node) {
