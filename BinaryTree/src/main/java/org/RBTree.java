@@ -113,6 +113,15 @@ public class RBTree<K extends Comparable<K>, V> {
     return null;
   }
 
+  /**
+   * 4种情况
+   * <ul>
+   *   <li>兄弟节点是红色</li>
+   *   <li>兄弟节点是黑色, 且兄弟节点的两个子节点都是黑色</li>
+   *   <li>兄弟节点是黑色, 兄弟节点子节点靠近删除节点一侧是红色, 另一侧是黑色</li>
+   *   <li>兄弟节点是黑色, 兄弟节点子节点远离删除节点一侧是红色</li>
+   * </ul>
+   */
   private void fixAfterRemove(Node<K, V> node, boolean isParnet) {
     Node cur = isParnet ? null : node;
     boolean isRed = isParnet ? false : node.isRed();    // 删除的节点的位置现在是什么颜色, 不存在就是黑色, 存在就是现任节点的颜色
