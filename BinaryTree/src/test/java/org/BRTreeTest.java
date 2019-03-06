@@ -11,10 +11,20 @@ import java.util.List;
 public class BRTreeTest {
   @Test
   public void testRbtree() {
-    RBTree<Integer, Integer> rbtree = new RBTree<>();
+    RBTree<Integer, Object> rbtree = new RBTree<>();
     for (int i = 0; i < 15; i++) {
       rbtree.add(i, i);
     }
+
+    levelTrace(rbtree).forEach(System.out::println);
+
+
+
+    // levelTrace(rbtree).forEach(System.out::println);
+    // for (int i = 0; i < 15; i++) {
+    //   rbtree.remove(i);
+    // }
+    System.out.println(rbtree.remove(3));
 
     levelTrace(rbtree).forEach(System.out::println);
   }

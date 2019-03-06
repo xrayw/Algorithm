@@ -3,7 +3,6 @@ package org;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
@@ -45,10 +44,20 @@ public class RBTree<K extends Comparable<K>, V> {
   }
 
   public V remove(K key) {
+    Node<K, V> x = getNode(key);
+    if (x == null) {
+      return null;
+    }
+
+    V res = x.value;
+    deleteNode(x);
+    return res;
+  }
+
+  private Node<K, V> getNode(K key) {
     Objects.requireNonNull(key);
 
     Node<K, V> cur = getRoot();
-    V res;
     while (cur != null) {
       int cmp = key.compareTo(cur.key);
       if (cmp < 0) {
@@ -56,72 +65,56 @@ public class RBTree<K extends Comparable<K>, V> {
       } else if (cmp > 0) {
         cur = cur.right;
       } else {
-        res = cur.value;
-
-        Node<K, V> x = cur;
-        if (cur.left == null && cur.right == null) {
-          // ignored
-        } else if (cur.left == null) {
-          if (cur.parent == null) {
-            root = cur.right;
-          }
-          else {
-            cur.right.parent = cur.parent;
-            if (cur.parent.left == cur) {
-              cur.parent.left = cur.right;
-            }
-            else {
-              cur.parent.right = cur.right;
-            }
-          }
-          x = cur.right;
-        }
-        else if (cur.right == null) {
-          if (cur.parent == null) {
-            root = cur.left;
-          }
-          else {
-            cur.left.parent = cur.parent;
-            if (cur.parent.left == cur) {
-              cur.parent.left = cur.left;
-            }
-            else {
-              cur.parent.right = cur.left;
-            }
-          }
-          x = cur.left;
-        }
-        else {
-          Node<K, V> p = successor(cur);
-          x = p;
-
-          cur.key = p.key;
-          cur.value = p.value;
-
-          // p.left == null
-          if (p.right != null) {
-            p.right.parent = p.parent;
-          }
-          if (p.parent.left == p) {
-            p.parent.left = p.right;
-          }
-          else {
-            p.parent.right = p.right;
-          }
-        }
-
-        if (!x.isRed()) {
-          fixAfterRemove(x);
-        }
-
-        if (root != null) {
-          root.setRed(false);
-          root.parent = null;
-        }
-        return res;
+        break;
       }
     }
-    return null;
+    return cur;
+  }
+
+  private void deleteNode(Node<K, V> cur) {
+    Node<K, V> p = cur;
+    if (cur.left != null && cur.right != null) {
+      Node<K, V> s = successor(cur);
+      p.key = s.key;
+      p.value = s.value;
+      p = s;
+    }
+
+    Node<K, V> replacement = p.left != null ? p.left : p.right;
+
+    if (replacement != null) {
+      replacement.parent = p.parent;
+      if (p.parent == null)
+        root = replacement;
+      else if (p == p.parent.left)
+        p.parent.left = replacement;
+      else
+        p.parent.right = replacement;
+
+      p.parent = p.left = p.right = null;
+
+      if (isBlack(p)) {
+        fixAfterRemove(replacement);
+      }
+    }
+    else if (p.parent == null) {
+      root = null;
+    }
+    else {
+      if (isBlack(p)) {
+        fixAfterRemove(p);
+      }
+
+      if (p.parent != null) {
+        if (p == p.parent.left) {
+          p.parent.left = null;
+        }
+        else {
+          p.parent.right = null;
+        }
+        p.parent = null;
+      }
+    }
   }
 
   /**
@@ -134,7 +127,7 @@ public class RBTree<K extends Comparable<K>, V> {
    * </ul>
    */
   private void fixAfterRemove(Node<K, V> x) {
-    while (x != root && !x.isRed()) {
+    while (x != root && isBlack(x)) {
       Node<K, V> parent = x.parent;
       Node<K, V> sibling = getSibling(x);
       boolean isLeft = (x == parent.left);
