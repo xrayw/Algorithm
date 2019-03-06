@@ -57,44 +57,61 @@ public class RBTree<K extends Comparable<K>, V> {
         cur = cur.right;
       } else {
         res = cur.value;
-        if (cur.right != null) {
-          // 找到右子树最小的数替换当前节点
-          Node<K, V> min = removeMin(cur.right);
 
-          boolean isParent = min.right == null;   // 是min的父节点还是右子节点
-          Node<K, V> x = isParent ? min.parent : min.right;   // x是需要开始调整平衡的节点
-
-          cur.value = min.value;
-
-          // 如果min.right是红色节点， 直接将红色变为黑色就平衡了。
-          if (!min.isRed()) {
-            if (min != cur.right) {
-              fixAfterRemove(x, isParent);
-            } else if (min.right != null) {
-              fixAfterRemove(min.getRight(), false);
-            } else {
-              fixAfterRemove(min, true);
+        Node<K, V> x = cur;
+        if (cur.left == null && cur.right == null) {
+          // ignored
+        } else if (cur.left == null) {
+          if (cur.parent == null) {
+            root = cur.right;
+          }
+          else {
+            cur.right.parent = cur.parent;
+            if (cur.parent.left == cur) {
+              cur.parent.left = cur.right;
+            }
+            else {
+              cur.parent.right = cur.right;
             }
           }
-        } else {
-          Node<K, V> parent = cur.parent;
-
-          if (cur.left != null) {
-            cur.left.parent = parent;
+          x = cur.right;
+        }
+        else if (cur.right == null) {
+          if (cur.parent == null) {
+            root = cur.left;
           }
-
-          if (parent.left == cur) {
-            parent.left = cur.left;
-          } else {
-            parent.right = cur.left;
+          else {
+            cur.left.parent = cur.parent;
+            if (cur.parent.left == cur) {
+              cur.parent.left = cur.left;
+            }
+            else {
+              cur.parent.right = cur.left;
+            }
           }
+          x = cur.left;
+        }
+        else {
+          Node<K, V> p = successor(cur);
+          x = p;
 
-          // current node is black and tree is not empty
-          if (!cur.isRed() && root.left != null) {
-            boolean isParent = cur.left == null;
-            Node<K, V> x = isParent ? parent : cur.left;
-            fixAfterRemove(x, isParent);
+          cur.key = p.key;
+          cur.value = p.value;
+
+          // p.left == null
+          if (p.right != null) {
+            p.right.parent = p.parent;
           }
+          if (p.parent.left == p) {
+            p.parent.left = p.right;
+          }
+          else {
+            p.parent.right = p.right;
+          }
+        }
+
+        if (!x.isRed()) {
+          fixAfterRemove(x);
         }
 
         if (root != null) {
@@ -107,10 +124,19 @@ public class RBTree<K extends Comparable<K>, V> {
     return null;
   }
 
+  /**
+   * 4种情况， 其他的是镜像操作
+   * <ul>
+   * <li>1.兄弟节点是红色</li>
+   * <li>兄弟节点是黑色, 且兄弟节点的两个子节点都是黑色</li>
+   * <li>兄弟节点是黑色, 兄弟节点子节点靠近删除节点一侧是红色, 另一侧是黑色</li>
+   * <li>兄弟节点是黑色, 兄弟节点子节点远离删除节点一侧是红色</li>
+   * </ul>
+   */
   private void fixAfterRemove(Node<K, V> x) {
     while (x != root && !x.isRed()) {
       Node<K, V> parent = x.parent;
-      Node<K, V> sibling = getSibling(x, parent);
+      Node<K, V> sibling = getSibling(x);
       boolean isLeft = (x == parent.left);
 
       if (sibling.isRed()) {
@@ -126,18 +152,18 @@ public class RBTree<K extends Comparable<K>, V> {
       }
 
       // sibling is black
+      // 需要以父节点为当前节点继续调整, 如果父节点是红色, 直接将父节点设为黑色即可
       else if (isBlack(sibling.left) && isBlack(sibling.right)) {
         sibling.setRed(true);
         x = parent;
       }
 
       // case3:  sibling节点左子节点靠近删除节点一侧是红，另一侧是黑
+      // 这种情况转换成了case4, 需要继续平衡
       else if (isLeft && !isBlack(sibling.left) && isBlack(sibling.right)) {
         sibling.setRed(true);
         sibling.left.setRed(false);
         rightRotate(sibling);
-
-        // x不变，转换成了case4
       }
       else if (!isLeft && !isBlack(sibling.right) && isBlack(sibling.left)) {
         sibling.setRed(true);
@@ -146,6 +172,7 @@ public class RBTree<K extends Comparable<K>, V> {
       }
 
       // case 4: sibling节点远离删除节点的一侧是红
+      // 该情况删除后已经平衡, 直接跳过调整
       else if (isLeft && !isBlack(sibling.right)) {
         sibling.setRed(parent.isRed());
         parent.setRed(false);
@@ -161,99 +188,30 @@ public class RBTree<K extends Comparable<K>, V> {
         break;
       }
     }
+
+    // 如果x为root或者红色, 直接染黑即可
     x.setRed(false);
   }
 
-  /**
-   * 4种情况， 其他的是镜像操作
-   * <ul>
-   * <li>1.兄弟节点是红色</li>
-   * <li>兄弟节点是黑色, 且兄弟节点的两个子节点都是黑色</li>
-   * <li>兄弟节点是黑色, 兄弟节点子节点靠近删除节点一侧是红色, 另一侧是黑色</li>
-   * <li>兄弟节点是黑色, 兄弟节点子节点远离删除节点一侧是红色</li>
-   * </ul>
-   */
-  private void fixAfterRemove(Node<K, V> node, boolean isParnet) {
-    Node cur = isParnet ? null : node;
-    boolean isRed = isParnet ? false : node.isRed();    // 删除的节点的位置现在是什么颜色, 不存在就是黑色, 存在就是现任节点的颜色
-    Node<K, V> parent = isParnet ? node : node.parent;
-
-    while (cur != root && !isRed) {
-      // 由于node是黑色节点， 所以sibling一定不为null
-      Node<K, V> sibling = getSibling(node, parent);
-      boolean curIsLeft = parent.getRight() == sibling;
-
-      // case1: sibling是红色节点
-      if (!curIsLeft && sibling.isRed()) {
-        parent.setRed(true);
-        sibling.setRed(false);
-        rightRotate(parent);
-      } else if (curIsLeft && sibling.isRed()) {
-        parent.setRed(true);
-        sibling.setRed(false);
-        leftRotate(parent);
-      }
-
-      // case2: sibling是黑色节点
-      else if (isBlack(sibling.left) && isBlack(sibling.right)) {
-        sibling.setRed(true);
-        cur = parent;
-        isRed = cur.isRed();
-
-        parent = parent.parent;
-      }
-
-      // case3:  sibling节点左子节点靠近删除节点一侧是红，另一侧是黑
-      else if (curIsLeft && !isBlack(sibling.left) && isBlack(sibling.right)) {
-        sibling.setRed(true);
-        sibling.left.setRed(false);
-
-        rightRotate(sibling);
-      } else if (!curIsLeft && !isBlack(sibling.right) && isBlack(sibling.left)) {
-        sibling.setRed(true);
-        sibling.right.setRed(false);
-        leftRotate(sibling);
-      }
-
-      // case4: sibling节点远离删除节点的一侧是红
-      else if (curIsLeft && !isBlack(sibling.right)) {
-        sibling.setRed(parent.isRed());
-        parent.setRed(false);
-        sibling.right.setRed(false);
-
-        leftRotate(parent);
-        break;
-
-      } else if (!curIsLeft && !isBlack(sibling.left)) {
-        sibling.setRed(parent.isRed());
-        parent.setRed(false);
-        sibling.left.setRed(false);
-
-        rightRotate(parent);
-        break;
-      }
-    }
-
-    if (isRed) {
-      cur.setRed(false);
-    }
-    if (root != null) {
-      root.setRed(false);
-      root.setParent(null);
-    }
-  }
-
-  @Nonnull
-  private Node<K, V> getSibling(Node<K, V> node, Node<K, V> parent) {
-    parent = (node == null ? parent : node.parent);
-    if (parent.left == node) {
-      return parent.right;
-    }
-    return parent.left;
+  private Node<K, V> getSibling(Node<K, V> node) {
+    Node<K, V> parent = node.parent;
+    return parent.left == node ? parent.right : parent.left;
   }
 
   private static boolean isBlack(Node node) {
     return node == null || !node.isRed();
+  }
+
+  private Node<K, V> successor(Node<K, V> node) {
+    Node<K, V> cur = node.right;
+    if (cur == null) {
+      return null;
+    }
+
+    while (cur.left != null) {
+      cur = cur.left;
+    }
+    return cur;
   }
 
   /**
