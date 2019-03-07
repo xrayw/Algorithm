@@ -208,25 +208,6 @@ public class RBTree<K extends Comparable<K>, V> {
   }
 
   /**
-   * 移除node子树的最小节点
-   */
-  private Node<K, V> removeMin(Node<K, V> node) {
-    if (node.left == null) {
-      return node;
-    }
-
-    while (node.left != null) {
-      node = node.left;
-    }
-
-    Node<K, V> parent = node.parent;
-    parent.left = node.right;
-    node.right.parent = parent;
-
-    return node;
-  }
-
-  /**
    * 当父节点是黑色的时候不用处理
    *
    * <ul>修复操作

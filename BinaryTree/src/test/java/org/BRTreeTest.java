@@ -21,12 +21,12 @@ public class BRTreeTest {
 
 
     // levelTrace(rbtree).forEach(System.out::println);
-    // for (int i = 0; i < 15; i++) {
-    //   rbtree.remove(i);
-    // }
-    System.out.println(rbtree.remove(3));
-
-    levelTrace(rbtree).forEach(System.out::println);
+      for (int i = 0; i < 15; i++) {
+      System.out.println(rbtree.remove(14 - i));
+    }
+    // System.out.println(rbtree.remove(3));
+    //
+    // levelTrace(rbtree).forEach(System.out::println);
   }
 
 
