@@ -14,9 +14,10 @@ public class BRTreeTest {
 
   @Test
   public void testRbtree() {
-    RBTree<Integer, Object> rbtree = new RBTree<>();
-    for (int i = 0; i < 15; i++) {
-      rbtree.add(i, i);
+    RBTree<Integer, Integer> rbtree = new RBTree<>();
+    ThreadLocalRandom current = ThreadLocalRandom.current();
+    for (int i = 0; i < 1000000; i++) {
+      rbtree.add(current.nextInt(0, Integer.MAX_VALUE), current.nextInt(0, Integer.MAX_VALUE));
     }
 
     levelTrace(rbtree).forEach(System.out::println);
@@ -29,9 +30,8 @@ public class BRTreeTest {
     //
     // levelTrace(rbtree).forEach(System.out::println);
 
-    ThreadLocalRandom current = ThreadLocalRandom.current();
     for (int i = 0; i < 1000000000; i++) {
-      rbtree.removeV2(current.nextInt(0, 1000000));
+      System.out.println(rbtree.removeV2(current.nextInt(0, Integer.MAX_VALUE)));
     }
   }
 
