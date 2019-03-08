@@ -1,5 +1,6 @@
 package org;
 
+import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,6 +42,60 @@ public class RBTree<K extends Comparable<K>, V> {
     // 修复由于插入导致的不平衡
     this.fixAfterInsert(node);
     return true;
+  }
+
+  public V removeV2(K key) {
+    Node<K, V> node = getNode(key);
+    if (node == null) {
+      return null;
+    }
+
+    V res = node.value;
+    deleteNodeV2(node);
+    return res;
+  }
+
+  private void deleteNodeV2(@Nonnull Node<K, V> node) {
+    if (node.left == null && node.right == null) {
+      if (node.parent == null) {
+        root = null;
+        return;
+      }
+
+      if (isBlack(node)) {
+        fixAfterRemove(node);
+      }
+
+      if (node.parent.left == node) {
+        node.parent.left = null;
+      } else {
+        node.parent.right = null;
+      }
+      node.parent = null;
+    }
+    else if (node.left != null && node.right != null) {
+      Node<K, V> p = successor(node);
+      node.key = p.key;
+      node.value = p.value;
+      deleteNodeV2(p);
+    }
+    else {
+      Node<K, V> replacement = node.left != null ? node.left : node.right;
+      replacement.parent = node.parent;
+      if (node.parent == null) {
+        root = replacement;
+      } else if (node.parent.left == node) {
+        node.parent.left = replacement;
+      } else {
+        node.parent.right = replacement;
+      }
+
+      node.parent = node.left = node.right = null;
+
+      if (isBlack(node)) {
+        fixAfterRemove(replacement);
+      }
+    }
   }
 
   public V remove(K key) {

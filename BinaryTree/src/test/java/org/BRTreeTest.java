@@ -1,6 +1,8 @@
 package org;
 
+import java.util.concurrent.ThreadLocalRandom;
 import org.RBTree.Node;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayDeque;
@@ -9,6 +11,7 @@ import java.util.Deque;
 import java.util.List;
 
 public class BRTreeTest {
+
   @Test
   public void testRbtree() {
     RBTree<Integer, Object> rbtree = new RBTree<>();
@@ -18,15 +21,18 @@ public class BRTreeTest {
 
     levelTrace(rbtree).forEach(System.out::println);
 
-
-
     // levelTrace(rbtree).forEach(System.out::println);
-      for (int i = 0; i < 15; i++) {
-      System.out.println(rbtree.remove(14 - i));
-    }
+    // for (int i = 0; i < 15; i++) {
+    //   System.out.println(rbtree.removeV2(14 - i));
+    // }
     // System.out.println(rbtree.remove(3));
     //
     // levelTrace(rbtree).forEach(System.out::println);
+
+    ThreadLocalRandom current = ThreadLocalRandom.current();
+    for (int i = 0; i < 1000000000; i++) {
+      rbtree.removeV2(current.nextInt(0, 1000000));
+    }
   }
 
 
