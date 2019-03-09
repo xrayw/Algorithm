@@ -12,6 +12,16 @@ public class RBTree<K extends Comparable<K>, V> {
   @Getter
   private Node<K, V> root;
 
+  public V get(K key) {
+    Node<K, V> node = getNode(key);
+    return node == null ? null : node.value;
+  }
+
+  public boolean contains(K key) {
+    Node<K, V> node = getNode(key);
+    return node == null;
+  }
+
   public boolean add(K key, V value) {
     Objects.requireNonNull(key);
     Objects.requireNonNull(value);
