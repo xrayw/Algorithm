@@ -1,6 +1,5 @@
 package org;
 
-import java.util.concurrent.ThreadLocalRandom;
 import org.RBTree.Node;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -9,10 +8,13 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BRTreeTest {
 
   @Test
+  @Ignore
   public void testRbtree() {
     RBTree<Integer, Integer> rbtree = new RBTree<>();
     ThreadLocalRandom current = ThreadLocalRandom.current();
@@ -33,6 +35,60 @@ public class BRTreeTest {
     for (int i = 0; i < 1000000000; i++) {
       System.out.println(rbtree.removeV2(current.nextInt(0, Integer.MAX_VALUE)));
     }
+  }
+
+  @Test
+  @Ignore
+  public void testR() throws InterruptedException {
+    CountDownLatch latch = new CountDownLatch(2);
+
+    BRTreeTest lock = this;
+
+    new Thread() {
+      @Override
+      public void run() {
+        for (int i = 1; i < 100; i += 2) {
+          synchronized (lock) {
+            System.out.println(i);
+
+            try {
+              lock.notify();
+              if (i != 99) {
+                lock.wait();
+              }
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+
+        latch.countDown();
+      }
+    }.start();
+
+    new Thread() {
+      @Override
+      public void run() {
+        for (int i = 2; i < 100; i += 2) {
+          synchronized (lock) {
+            System.out.println(i);
+            try {
+              lock.notify();
+              if (i != 98) {
+                lock.wait();
+              }
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+
+        latch.countDown();
+      }
+    }.start();
+
+
+    latch.await();
   }
 
 
